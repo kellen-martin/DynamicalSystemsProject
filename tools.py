@@ -108,6 +108,99 @@ def Symplectic_Leapfrog(r_0, v_0, masses, t_0, t_f, h):
     print('Simulation End')
     return r_1, v_1, r_2, v_2, r_3, v_3
 
+def PEFRL_3BP(r_0, v_0, masses, t_0, t_f, h):
+      # Gravitational Constant
+    G = 6.6743*10**(-11)# [m^3/kg*s^2]
+
+    # Find number of steps
+    steps = int((t_f + t_0)/h) + 1
+
+    # Initialize Vector
+    r_1 = np.zeros((steps,3))
+    r_2 = np.zeros((steps,3))
+    r_3 = np.zeros((steps,3))
+    v_1 = np.zeros((steps,3))
+    v_2 = np.zeros((steps,3))
+    v_3 = np.zeros((steps,3))
+
+    # Enter initial conditions
+    r_1[0,:] = r_0[0,:]
+    r_2[0,:] = r_0[1,:]
+    r_3[0,:] = r_0[2,:]
+    v_1[0,:] = v_0[0,:]
+    v_2[0,:] = v_0[1,:]
+    v_3[0,:] = v_0[2,:]
+
+    m_1 = masses[0]
+    m_2 = masses[1]
+    m_3 = masses[2]
+
+    # PEFRL variables
+    zeta = 0.1786178958448091
+    lambda_ = -0.2123418310626054
+    chi = -0.6626458266981849*10**(-1)
+
+    # PEFRL time
+    for i in range(0,steps-1):
+         # Step 1
+         r1_temp = r_1[i,:] + zeta*h*v_1[i,:]
+         r2_temp = r_2[i,:] + zeta*h*v_2[i,:]
+         r3_temp = r_3[i,:] + zeta*h*v_3[i,:]
+
+         # Step 2
+         a1, a2, a3 = get_acceleration(r1_temp, r2_temp, r3_temp, m_1, m_2, m_3, G)
+         v1_temp = v_1[i,:] + (1 - 2*lambda_)*.5*h*a1
+         v2_temp = v_2[i,:] + (1 - 2*lambda_)*.5*h*a2
+         v3_temp = v_3[i,:] + (1 - 2*lambda_)*.5*h*a3
+
+         # Step 3 
+         r1_temp = r1_temp + chi*h*v1_temp
+         r2_temp = r2_temp + chi*h*v2_temp
+         r3_temp = r3_temp + chi*h*v3_temp
+
+         # Step 4 
+         a1, a2, a3 = get_acceleration(r1_temp, r2_temp, r3_temp, m_1, m_2, m_3, G)
+         v1_temp = v1_temp + lambda_*h*a1
+         v2_temp = v3_temp + lambda_*h*a2
+         v3_temp = v3_temp + lambda_*h*a3
+
+         # Step 5
+         r1_temp = r1_temp + (1 - 2*(chi + zeta))*h*v1_temp
+         r2_temp = r2_temp + (1 - 2*(chi + zeta))*h*v2_temp
+         r3_temp = r3_temp + (1 - 2*(chi + zeta))*h*v3_temp
+
+         # Step 6 
+         a1, a2, a3 = get_acceleration(r1_temp, r2_temp, r3_temp, m_1, m_2, m_3, G)
+         v1_temp = v1_temp + lambda_*h*a1
+         v2_temp = v2_temp + lambda_*h*a2
+         v3_temp = v3_temp + lambda_*h*a3
+
+         # Step 7 
+         r1_temp = r1_temp + chi*h*v1_temp
+         r2_temp = r2_temp + chi*h*v2_temp
+         r3_temp = r3_temp + chi*h*v3_temp
+
+         # Step 8
+         a1, a2, a3 = get_acceleration(r1_temp, r2_temp, r3_temp, m_1, m_2, m_3, G)
+         v1_temp = v1_temp + (1 - 2*lambda_)*h*.5*a1
+         v2_temp = v2_temp + (1 - 2*lambda_)*h*.5*a2
+         v3_temp = v3_temp + (1 - 2*lambda_)*h*.5*a3
+
+         # Step 9 
+         r1_temp = r1_temp + zeta*h*v1_temp
+         r2_temp = r2_temp + zeta*h*v2_temp
+         r3_temp = r3_temp + zeta*h*v3_temp
+
+         r_1[i+1,:] = r1_temp
+         v_1[i+1,:] = v1_temp
+         r_2[i+1,:] = r2_temp
+         v_2[i+1,:] = v2_temp
+         r_3[i+1,:] = r3_temp
+         v_3[i+1,:] = v3_temp
+
+         
+
+    return r_1, v_1, r_2, v_2, r_3, v_3
 
 def distance(r_ij):
     distance = np.sqrt( (r_ij[0])**2 + (r_ij[1])**2 + (r_ij[2])**2)
