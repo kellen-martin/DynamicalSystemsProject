@@ -61,7 +61,7 @@ def Symplectic_Leapfrog(r_0, v_0, masses, t_0, t_f, h):
     G = 6.6743*10**(-11)# [m^3/kg*s^2]
 
     # Find number of steps
-    steps = int((t_f + t_0)/h)
+    steps = int((t_f + t_0)/h) + 1
 
     # Initialize Vector
     r_1 = np.zeros((steps,3))
@@ -72,20 +72,36 @@ def Symplectic_Leapfrog(r_0, v_0, masses, t_0, t_f, h):
     v_3 = np.zeros((steps,3))
 
     # Enter initial conditions
-    r_1[0,0:3] = r_0[0,:]
-    r_2[0,0:3] = r_0[1,:]
-    r_3[0,0:3] = r_0[2,:]
-    v_1[0,0:3] = v_0[0,:]
-    v_2[0,0:3] = v_0[1,:]
-    v_3[0,0:3] = v_0[2,:]
+    r_1[0,:] = r_0[0,:]
+    r_2[0,:] = r_0[1,:]
+    r_3[0,:] = r_0[2,:]
+    v_1[0,:] = v_0[0,:]
+    v_2[0,:] = v_0[1,:]
+    v_3[0,:] = v_0[2,:]
 
     m_1 = masses[0]
     m_2 = masses[1]
     m_3 = masses[2]
 
     # Leapfrog Method
+    for i in range(0,steps-1):
 
-    # Step 1, get v_1/2
+        # Velocity half-step
+        a1, a2, a3 = get_acceleration(r_1[i,:], r_2[i,:], r_3[i,:], m_1, m_2, m_3, G)
+        v1_half = v_1[i,:] + .5*a1
+        v2_half = v_2[i,:] + .5*a2
+        v3_half = v_3[i,:] + .5*a3
+
+        # Position full-step
+        r_1[i+1,:] = r_1[i,:] + h*v1_half
+        r_2[i+1,:] = r_2[i,:] + h*v2_half
+        r_3[i+1,:] = r_3[i,:] + h*v3_half
+
+        # Velocity full-step
+        a1, a2, a3 = get_acceleration(r_1[i+1,:], r_2[i+1,:], r_3[i+1,:], m_1, m_2, m_3, G)
+        v_1[i+1,:] = v1_half + .5*h*a1
+        v_2[i+1,:] = v2_half + .5*h*a2
+        v_3[i+1,:] = v3_half + .5*h*a3
 
     return r_1, v_1, r_2, v_2, r_3, v_3
 
@@ -109,3 +125,9 @@ def get_acceleration(r_1,r_2,r_3,m_1,m_2,m_3,G):
         a_3 = -G*m_1*(r_31)/(distance(r_31)**3) - G*m_2*(r_32)/(distance(r_32)**3)
     
         return a_1, a_2, a_3
+
+# calculates center of mass
+def get_com(r_1,r_2,r_3,m_1,m_2,m_3):
+     com = (r_1*m_1 + r_2*m_2 + r_3*m_3)/(m_1 + m_2 + m_3)
+     return com
+
