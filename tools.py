@@ -3,6 +3,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
+# Euler Time Stepping 3-body problem
 def Naive3BP(r_0, v_0, masses, t_0, t_f, h):
 
     # Gravitational Constant
@@ -56,6 +57,7 @@ def Naive3BP(r_0, v_0, masses, t_0, t_f, h):
 
     return r_1, v_1, r_2, v_2, r_3, v_3
 
+# Symplectic Leapfrog 3-body problem
 def Symplectic_Leapfrog(r_0, v_0, masses, t_0, t_f, h):
     # Gravitational Constant
     G = 6.6743*10**(-11)# [m^3/kg*s^2]
@@ -103,7 +105,9 @@ def Symplectic_Leapfrog(r_0, v_0, masses, t_0, t_f, h):
         v_2[i+1,:] = v2_half + .5*h*a2
         v_3[i+1,:] = v3_half + .5*h*a3
 
+    print('Simulation End')
     return r_1, v_1, r_2, v_2, r_3, v_3
+
 
 def distance(r_ij):
     distance = np.sqrt( (r_ij[0])**2 + (r_ij[1])**2 + (r_ij[2])**2)
