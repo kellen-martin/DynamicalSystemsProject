@@ -88,9 +88,9 @@ def Symplectic_Leapfrog(r_0, v_0, masses, t_0, t_f, h):
 
         # Velocity half-step
         a1, a2, a3 = get_acceleration(r_1[i,:], r_2[i,:], r_3[i,:], m_1, m_2, m_3, G)
-        v1_half = v_1[i,:] + .5*a1
-        v2_half = v_2[i,:] + .5*a2
-        v3_half = v_3[i,:] + .5*a3
+        v1_half = v_1[i,:] + .5*h*a1
+        v2_half = v_2[i,:] + .5*h*a2
+        v3_half = v_3[i,:] + .5*h*a3
 
         # Position full-step
         r_1[i+1,:] = r_1[i,:] + h*v1_half
