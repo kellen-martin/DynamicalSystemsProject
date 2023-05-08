@@ -3,6 +3,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
+####################### Integrators ##################################
 # Euler Time Stepping 3-body problem
 def Naive3BP(r_0, v_0, masses, t_0, t_f, h):
 
@@ -201,7 +202,9 @@ def PEFRL_3BP(r_0, v_0, masses, t_0, t_f, h):
          
 
     return r_1, v_1, r_2, v_2, r_3, v_3
+######################################################################
 
+###################### Tools #########################################
 def distance(r_ij):
     distance = np.sqrt( (r_ij[0])**2 + (r_ij[1])**2 + (r_ij[2])**2)
     return distance
@@ -260,7 +263,9 @@ def total_energy(r_1, v_1, r_2, v_2, r_3, v_3, masses, G):
 
         
         return E
+#####################################################################
 
+########################### Plots ###################################
 def plot_3BP(r_1,r_2,r_3):
     fig = plt.figure(figsize=(12,12))
     ax = fig.add_subplot(111, projection='3d')
@@ -291,3 +296,16 @@ def plot_energy(E, t_0, t_f):
      plt.title("Total Energy vs Time")
 
      plt.show()
+
+def animate_3BP(r_1, r_2, r_3):
+    fig = plt.figure(figsize=(12,12))
+    ax = fig.add_subplot(111, projection='3d')
+    plt.gca().patch.set_facecolor('black')
+    ax.w_xaxis.set_pane_color((0.0, 0.0, 0.0, 1.0)), ax.w_yaxis.set_pane_color((0.0, 0.0, 0.0, 1.0)), ax.w_zaxis.set_pane_color((0.0, 0.0, 0.0, 1.0))
+    # plot the trajectory of objects
+    ax.plot(r_1[:,0],r_1[:,1],r_1[:,2],'yo')
+    ax.plot(r_2[:,0],r_2[:,1],r_2[:,2], 'bo')
+    ax.plot(r_3[:,0],r_3[:,1],r_3[:,2], 'ro')
+    
+    
+    return

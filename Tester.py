@@ -18,11 +18,11 @@ def main():
     #masses = np.array([1.989*10**30, 5.972*10**24, 7.342*10**22])
     t_0 = 0
     t_f = 86400*365*30
-    h = 86400
+    h = 86400*7
 
     #r_1,v_1,r_2,v_2,r_3,v_3 = Naive3BP(r_0, v_0, masses, t_0, t_f, h)
-    #r_1,v_1,r_2,v_2,r_3,v_3 = Symplectic_Leapfrog(r_0, v_0, masses, t_0, t_f, h)
-    r_1,v_1,r_2,v_2,r_3,v_3 = PEFRL_3BP(r_0, v_0, masses, t_0, t_f, h)
+    r_1,v_1,r_2,v_2,r_3,v_3 = Symplectic_Leapfrog(r_0, v_0, masses, t_0, t_f, h)
+    #r_1,v_1,r_2,v_2,r_3,v_3 = PEFRL_3BP(r_0, v_0, masses, t_0, t_f, h)
 
     E = total_energy(r_1, v_1, r_2, v_2, r_3, v_3, masses, G)
     #print(r_3)
