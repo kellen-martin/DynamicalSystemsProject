@@ -2,6 +2,8 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import animation
 
 ####################### Integrators ##################################
 # Euler Time Stepping 3-body problem
@@ -200,7 +202,7 @@ def PEFRL_3BP(r_0, v_0, masses, t_0, t_f, h):
          v_3[i+1,:] = v3_temp
 
          
-
+    print('Simulation End')
     return r_1, v_1, r_2, v_2, r_3, v_3
 ######################################################################
 
@@ -285,9 +287,7 @@ def max_abs_error(E):
 def plot_3BP(r_1,r_2,r_3):
     fig = plt.figure(figsize=(12,12))
     ax = fig.add_subplot(111, projection='3d')
-    plt.gca().patch.set_facecolor('black')
-    ax.w_xaxis.set_pane_color((0.0, 0.0, 0.0, 1.0)), ax.w_yaxis.set_pane_color((0.0, 0.0, 0.0, 1.0)), ax.w_zaxis.set_pane_color((0.0, 0.0, 0.0, 1.0))
-    # plot the trajectory of objects
+
     ax.plot(r_1[:,0],r_1[:,1],r_1[:,2], label = 'Body 1')
     ax.plot(r_2[:,0],r_2[:,1],r_2[:,2], label = 'Body 2')
     ax.plot(r_3[:,0],r_3[:,1],r_3[:,2], label = 'Body 3')
@@ -314,7 +314,6 @@ def plot_difference(r_1, r_2, t_0, t_f):
      plt.show()
      return
 
-     
 def plot_energy(E, t_0, t_f):
      times = np.linspace(t_0, t_f, len(E))
 
@@ -408,15 +407,38 @@ def plot_error(rel_error, t_0, t_f):
      plt.show()
      return
 
-def animate_3BP(r_1, r_2, r_3):
-    fig = plt.figure(figsize=(12,12))
-    ax = fig.add_subplot(111, projection='3d')
-    plt.gca().patch.set_facecolor('black')
-    ax.w_xaxis.set_pane_color((0.0, 0.0, 0.0, 1.0)), ax.w_yaxis.set_pane_color((0.0, 0.0, 0.0, 1.0)), ax.w_zaxis.set_pane_color((0.0, 0.0, 0.0, 1.0))
-    # plot the trajectory of objects
-    ax.plot(r_1[:,0],r_1[:,1],r_1[:,2],'yo')
-    ax.plot(r_2[:,0],r_2[:,1],r_2[:,2], 'bo')
-    ax.plot(r_3[:,0],r_3[:,1],r_3[:,2], 'ro')
-    
+def prep_animation(r_1, r_2, r_3, inte):
+     r1_ani = r_1[::inte]
+     r_2ani = r_2[::inte]
+     r_3ani = r_3[::inte]
+     return r1_ani, r_2ani, r_3ani
+
+def animate_3BP(r_1, r_2, r_3,file_name):
+    num_points = len(r_1)
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    ax.set_axis_off()
+
+    def Animate_Func(num):
+         ax.clear()
+         ax.set_axis_off()
+         ax.scatter(r_1[num,0], r_1[num,1], r_1[num,2])
+         ax.scatter(r_2[num,0], r_2[num,1], r_2[num,2])
+         ax.scatter(r_3[num,0], r_3[num,1], r_3[num,2])
+         ax.plot3D(r_1[0,0], r_1[0,1],r_1[0,2])
+
+         ax.set_xlim3d([min(r_3[:,0])-1, max(r_3[:,0])+1])
+         ax.set_ylim3d([min(r_3[:,1])-1, max(r_3[:,1])+1])
+         ax.set_zlim3d([min(r_3[:,2])-1, max(r_3[:,2])+1])
+
+
+    line_ani = animation.FuncAnimation(fig, Animate_Func, interval=100, frames=num_points)
+    plt.show()
+
+    f = r"c://Users/18475/Desktop/"
+    f = f + file_name
+    writergif = animation.PillowWriter(fps=num_points/6)
+    line_ani.save(f, writer=writergif)
+         
     
     return
