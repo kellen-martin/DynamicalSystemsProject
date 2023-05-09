@@ -234,7 +234,7 @@ def get_com(r_1,r_2,r_3,m_1,m_2,m_3):
 # Calculates the total kinetic energy of the 3BP
 def kinetic_energy(v_1,v_2,v_3, m_1, m_2, m_3):
      # KE = sum(1/2mv^2)
-     KE = .5*np.linalg.norm(v_1)*m_1 + .5*np.linalg.norm(v_2)*m_2 + .5*np.linalg.norm(v_3)*m_3
+     KE = .5*np.linalg.norm(v_1)**2*m_1 + .5*np.linalg.norm(v_2)**2*m_2 + .5*np.linalg.norm(v_3)**2*m_3
      return KE
 
 def potnetial_energy(r_1, r_2, r_3, m_1, m_2, m_3, G):
@@ -263,6 +263,22 @@ def total_energy(r_1, v_1, r_2, v_2, r_3, v_3, masses, G):
 
         
         return E
+
+def rel_error(E):
+     rel_error = abs(E[0] - E)/abs(E[0])
+     return rel_error
+
+def max_rel_error(E):
+     mre = max(abs(E[0] - E)/abs(E[0]))
+     return mre 
+
+def absolute_error(E):
+     abs_error = abs(E[0] - E)
+     return abs_error
+
+def max_abs_error(E):
+     mae = max(abs(E[0] - E))
+     return mae 
 #####################################################################
 
 ########################### Plots ###################################
@@ -272,21 +288,33 @@ def plot_3BP(r_1,r_2,r_3):
     plt.gca().patch.set_facecolor('black')
     ax.w_xaxis.set_pane_color((0.0, 0.0, 0.0, 1.0)), ax.w_yaxis.set_pane_color((0.0, 0.0, 0.0, 1.0)), ax.w_zaxis.set_pane_color((0.0, 0.0, 0.0, 1.0))
     # plot the trajectory of objects
-    ax.plot(r_1[:,0],r_1[:,1],r_1[:,2],'y-')
-    ax.plot(r_2[:,0],r_2[:,1],r_2[:,2], 'b-')
-    ax.plot(r_3[:,0],r_3[:,1],r_3[:,2], 'r--')
+    ax.plot(r_1[:,0],r_1[:,1],r_1[:,2], label = 'Body 1')
+    ax.plot(r_2[:,0],r_2[:,1],r_2[:,2], label = 'Body 2')
+    ax.plot(r_3[:,0],r_3[:,1],r_3[:,2], label = 'Body 3')
 
     # plot starting points
-    ax.plot(r_1[0,0],r_1[0,1],r_1[0,2],'y*')
-    ax.plot(r_2[0,0],r_2[0,1],r_2[0,2], 'b*')
-    ax.plot(r_3[0,0],r_3[0,1],r_3[0,2], 'r*')
+    ax.plot(r_1[0,0],r_1[0,1],r_1[0,2],'*')
+    ax.plot(r_2[0,0],r_2[0,1],r_2[0,2],'*')
+    ax.plot(r_3[0,0],r_3[0,1],r_3[0,2],'*')
 
-
-    # Mark Starting Point
-
+    plt.xlabel('X [m]')
+    plt.ylabel('Y [m]')
+    plt.title('Unrestricted 3BP - Leapfrog')
+    plt.legend()
     plt.show()
     return
 
+def plot_difference(r_1, r_2, t_0, t_f):
+     diff = np.zeros((len(r_1)))
+     for i in range(0,len(diff)):
+        diff[i] = np.linalg.norm(abs(r_1[i,:] - r_2[i,:]))
+
+     times = np.linspace(t_0, t_f, len(diff))
+     plt.plot(times, diff)
+     plt.show()
+     return
+
+     
 def plot_energy(E, t_0, t_f):
      times = np.linspace(t_0, t_f, len(E))
 
@@ -296,6 +324,89 @@ def plot_energy(E, t_0, t_f):
      plt.title("Total Energy vs Time")
 
      plt.show()
+
+def plot_energies(E1, E2, E3, t_0, t_f):
+     times1 = np.linspace(t_0, t_f, len(E1))
+     times2 = np.linspace(t_0, t_f, len(E2))
+     times3 = np.linspace(t_0, t_f, len(E3))
+
+     plt.plot(times1, E1, label = 'unperturbed')
+     plt.plot(times2, E2, label = 'perturbation 1')
+     plt.plot(times3, E3, label = 'perturbation 2')
+
+     plt.ylabel("Energy [J]")
+     plt.xlabel("Time [s]")
+     plt.title("Total Energy vs Time")
+
+     plt.legend()
+     plt.show()
+     return
+
+def plot_relerrors(re1, re2, re3, t_0, t_f):
+     times1 = np.linspace(t_0, t_f, len(re1))
+     times2 = np.linspace(t_0, t_f, len(re2))
+     times3 = np.linspace(t_0, t_f, len(re3))
+
+     plt.plot(times1, re1, label = 'h = 1 day')
+     plt.plot(times2, re2, label = 'h = 10000 seconds')
+     plt.plot(times3, re3, label = 'h = 100 seconds')
+
+     plt.ylabel("Relative Error")
+     plt.xlabel("Time [s]")
+     plt.title("Relative Error vs Time")
+
+     plt.legend()
+     plt.show()
+     return
+
+def plot_abserrors(ae1, ae2, ae3, t_0, t_f):
+     times1 = np.linspace(t_0, t_f, len(ae1))
+     times2 = np.linspace(t_0, t_f, len(ae2))
+     times3 = np.linspace(t_0, t_f, len(ae3))
+
+     plt.plot(times1, ae1, label = 'h = 1 day')
+     plt.plot(times2, ae2, label = 'h = 10000 seconds')
+     plt.plot(times3, ae3, label = 'h = 100 seconds')
+
+     plt.ylabel("Absolute Error")
+     plt.xlabel("Time [s]")
+     plt.title("Absolute Error vs Time")
+
+     plt.legend()
+     plt.show()
+     return
+
+def plot_max_abserror(ae1, ae2, ae3, h1, h2, h3):
+     aes = np.array([ae3, ae2, ae1])
+     hs = np.array([h3, h2, h1])
+
+     plt.plot(hs, aes)
+     plt.xlabel('Step Size [s]')
+     plt.ylabel('Absolute Error')
+     plt.title('Absolute Error vs Step Size')
+     plt.show()
+     return
+def plot_max_relerror(re1, re2, re3, h1, h2, h3):
+     res = np.array([re3, re2, re1])
+     hs = np.array([h3, h2, h1])
+
+     plt.plot(hs, res)
+     plt.xlabel('Step Size [s]')
+     plt.ylabel('Relative Error')
+     plt.title('Relative Error vs Step Size')
+     plt.show()
+     return
+
+def plot_error(rel_error, t_0, t_f):
+     times = np.linspace(t_0, t_f, len(rel_error))
+
+     plt.plot(times, rel_error)
+     plt.ylabel("Relative Error")
+     plt.xlabel("Time [s]")
+     plt.title("Relative Error vs Time")
+
+     plt.show()
+     return
 
 def animate_3BP(r_1, r_2, r_3):
     fig = plt.figure(figsize=(12,12))
