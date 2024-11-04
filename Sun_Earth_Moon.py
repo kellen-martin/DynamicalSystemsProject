@@ -61,6 +61,8 @@ def main():
     #plot_3BP(r_1, r_2, r_3)
     #plot_3BP(r_12, r_22, r_32)
     #plot_3BP(r_13, r_23, r_33)
+
+    # Animation
     r1_ani,r2_ani,r3_ani = prep_animation(r_1, r_2, r_3, 10)
     r12_ani,r22_ani,r32_ani = prep_animation(r_12, r_22, r_32, 10)
     r13_ani,r23_ani,r33_ani = prep_animation(r_13, r_23, r_33, 1000)
