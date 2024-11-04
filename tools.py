@@ -299,7 +299,7 @@ def plot_3BP(r_1,r_2,r_3):
 
     plt.xlabel('X [m]')
     plt.ylabel('Y [m]')
-    plt.title('Unrestricted 3BP - Leapfrog')
+    plt.title('Earth Fly-by')
     plt.legend()
     plt.show()
     return
@@ -435,7 +435,7 @@ def animate_3BP(r_1, r_2, r_3,file_name):
     line_ani = animation.FuncAnimation(fig, Animate_Func, interval=100, frames=num_points)
     plt.show()
 
-    f = r"c://Users/18475/Desktop/"
+    f = r"C:/Users/kmartin6/Desktop/Orbital Mechanics"
     f = f + file_name
     writergif = animation.PillowWriter(fps=num_points/6)
     line_ani.save(f, writer=writergif)
