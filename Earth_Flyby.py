@@ -50,6 +50,7 @@ def main():
     a = radius * np.cos( theta )
     b = radius * np.sin( theta )
 
+    # Plot s/c relative position
     plt.figure(figsize=(12,12))
     plt.plot(delta_r_1[:,0],delta_r_1[:,1], label = "1000 m/s")
     plt.plot(delta_r_2[:,0],delta_r_2[:,1], label = "2000 m/s")
@@ -59,7 +60,7 @@ def main():
     plt.xlabel("x [m]")
     plt.ylabel("y [m]")
     plt.legend()
-    plt.title("1.5 Year Earth Relative Position [eta = 0]")
+    plt.title("1.5 Year s/c Earth Relative Position [eta = 0]")
     plt.axis('equal')
     plt.show()
     
