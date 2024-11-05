@@ -56,7 +56,6 @@ def main():
     plt.plot(delta_r_2[:,0],delta_r_2[:,1], label = "2000 m/s")
     plt.plot(delta_r_3[:,0],delta_r_3[:,1], label = "3000 m/s")
     plt.plot(a,b, label = "Earth SOI")
-    plt.plot(c,d, label = ".1 AU")
     plt.xlabel("x [m]")
     plt.ylabel("y [m]")
     plt.legend()
